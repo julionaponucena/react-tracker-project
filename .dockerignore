@@ -1,0 +1,12 @@
+node_modules
+dist
+dist-ssr
+.idea
+.vscode
+*.db
+*.iml
+.git
+.gitignore
+spring-teste.db
+.spring-teste
+README.md
