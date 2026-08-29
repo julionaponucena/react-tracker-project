@@ -1,4 +1,5 @@
-import { Container, Spinner } from 'react-bootstrap';
+import { useState } from 'react';
+import { Alert, Container, Spinner } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import MusicForm from '../../components/MusicForm';
 import { api, type UpdateMusic } from '../../services/api';
@@ -11,20 +12,19 @@ interface MusicFormData {
     name: string;
   };
   momentIds: number[];
-  musicTemperature?: {
-    id: number;
-    name: string;
-  };
+  musicTemperature?: number;
 }
 
 export default function EditMusicPage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { music, loading, error } = useMusicById(id);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const onFormSubmit = async (data: MusicFormData) => {
     if (!id) return;
-    
+    setSubmitError(null);
+
     try {
       const musicData: UpdateMusic = {
         id: parseInt(id),
@@ -36,7 +36,7 @@ export default function EditMusicPage() {
       await api.updateMusic(musicData);
       navigate('/musics');
     } catch (err) {
-      console.error('Error updating music:', err);
+      setSubmitError(err instanceof Error ? err.message : 'Erro ao atualizar música');
     }
   };
 
@@ -66,6 +66,7 @@ export default function EditMusicPage() {
   return (
     <Container className="mt-4">
       <h1 className="mb-4">Editar Música</h1>
+      {submitError && <Alert variant="danger">{submitError}</Alert>}
       <MusicForm onSubmit={onFormSubmit} initialData={initialData} submitLabel="Atualizar" />
     </Container>
   );

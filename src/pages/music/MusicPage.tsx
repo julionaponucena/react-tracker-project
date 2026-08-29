@@ -8,7 +8,6 @@ function MusicPage() {
   const {music,loading,error,refetch} = useMusic()
   const [showModal, setShowModal] = useState(false)
   const [musicToDelete, setMusicToDelete] = useState<number | null>(null)
-  console.log(music)
   const handleDeleteClick = (id: number) => {
     setMusicToDelete(id)
     setShowModal(true)

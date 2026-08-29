@@ -23,9 +23,7 @@ export default function MusicTemperatureSelector({ control, name, musicTemperatu
   }));
 
   const getSelectedMusicTemperature = (musicTemperatureId?: number): MusicTemperatureOption | null => {
-    console.log('getSelectedMusicTemperature',musicTemperatureOptions);
     if (!musicTemperatureId) return null;
-    console.log(musicTemperatureId);
     return musicTemperatureOptions.find((option) => option.value === musicTemperatureId) || null;
   };
 

@@ -9,7 +9,6 @@ export default function EditCategory() {
     const { id } = useParams();
     const { category, loading, error } = useCategory(id);
     const navigate = useNavigate()
-    // const [submitting, setSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
 
     const handleSubmit = async (data: { name: string; value: number; momentIds?: number[] }) => {
@@ -17,16 +16,13 @@ export default function EditCategory() {
             return;
         }
 
-        // setSubmitting(true);
         setSubmitError(null);
 
         try {
             await api.updateCategory({ id: parseInt(id), ...data });
-            navigate("/")
+            navigate("/categories")
         } catch (err) {
             setSubmitError(err instanceof Error ? err.message : 'Erro ao atualizar categoria');
-        } finally {
-            // setSubmitting(false);
         }
     };
 

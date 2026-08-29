@@ -1,6 +1,5 @@
 import { Form, Button } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
-import { useEffect } from 'react';
 import BandSelector from './BandSelector';
 import MomentSelector from './MomentSelector';
 import MusicTemperatureSelector from './MusicTemperatureSelector';
@@ -17,12 +16,12 @@ interface MusicFormData {
 
 interface MusicFormProps {
   initialData?: Partial<MusicFormData>;
-  onSubmit: (data: MusicFormData) => void;
+  onSubmit: (data: MusicFormData) => void | Promise<void>;
   submitLabel?: string;
 }
 
 export default function MusicForm({ initialData, onSubmit, submitLabel = 'Enviar' }: MusicFormProps) {
-  const { register, handleSubmit, control, formState: { errors }, reset } = useForm<MusicFormData>({
+  const { register, handleSubmit, control, setError, formState: { errors } } = useForm<MusicFormData>({
     defaultValues: {
       name: initialData?.name || '',
       band: initialData?.band || undefined,
@@ -31,23 +30,11 @@ export default function MusicForm({ initialData, onSubmit, submitLabel = 'Enviar
     }
   });
 
-
-  // useEffect(() => {
-  //   if (initialData) {
-  //     reset({
-  //       name: initialData.name || '',
-  //       band: initialData.band || undefined,
-  //       momentIds: initialData.momentIds || [],
-  //       musicTemperatureId: initialData.musicTemperatureId || undefined
-  //     });
-  //   }
-  // }, [initialData, reset]);
-
-  const bandId = initialData?.band?.id;
-  const momentsIds = initialData?.momentIds || [];
-  // const musicTemperatureId = initialData?.musicTemperatureId;
-
   const onFormSubmit = (data: MusicFormData) => {
+    if (!data.band) {
+      setError('band', { type: 'manual', message: 'Banda é obrigatória' });
+      return;
+    }
     onSubmit(data);
   };
 
@@ -64,11 +51,12 @@ export default function MusicForm({ initialData, onSubmit, submitLabel = 'Enviar
         {errors.name && <Form.Control.Feedback type="invalid">{errors.name.message}</Form.Control.Feedback>}
       </Form.Group>
 
-      <BandSelector bandId={bandId} control={control} name="band" />
+      <BandSelector bandId={initialData?.band?.id} control={control} name="band" />
+      {errors.band && <Form.Text className="text-danger">{errors.band.message}</Form.Text>}
 
-      <MomentSelector control={control} name="momentIds" momentsIds={momentsIds} />
+      <MomentSelector control={control} name="momentIds" momentsIds={initialData?.momentIds || []} />
 
-      <MusicTemperatureSelector  control={control} name="musicTemperature" />
+      <MusicTemperatureSelector  control={control} name="musicTemperature" musicTemperatureId={initialData?.musicTemperature} />
 
       <Button variant="primary" type="submit">
         {submitLabel}

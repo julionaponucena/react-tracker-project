@@ -145,6 +145,17 @@ export type FindMusic = {
   };
 }
 
+
+  async function getErrorMessage(response: Response, fallback: string): Promise<Error> {
+    try {
+      const body = await response.json();
+      const message = body?.detail || body?.message || body?.error || fallback;
+      return new Error(message);
+    } catch {
+      return new Error(fallback);
+    }
+  }
+
 export const api = {
   async getCategories(): Promise<ListCategory[]> {
     const response = await fetch(`${API_BASE_URL}/categories`);
@@ -284,7 +295,7 @@ export const api = {
       body: JSON.stringify(data),
     });
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw await getErrorMessage(response, 'Erro ao criar música');
     }
   },
 
@@ -297,7 +308,7 @@ export const api = {
       body: JSON.stringify(data),
     });
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw await getErrorMessage(response, 'Erro ao atualizar música');
     }
   },
 

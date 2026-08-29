@@ -1,6 +1,7 @@
 import { Container, Spinner, Alert } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useMoment } from '../../hooks/useMoments.ts';
 import {api} from '../../services/api.ts';
 import MomentForm from '../../components/MomentForm.tsx';
@@ -8,6 +9,7 @@ import MomentForm from '../../components/MomentForm.tsx';
 export default function EditMoment() {
     const { id } = useParams();
     const { moment, loading, error } = useMoment(id);
+    const navigate = useNavigate();
     const [submitError, setSubmitError] = useState<string | null>(null);
 
     const handleSubmit = async (data: { name: string }) => {
@@ -19,6 +21,7 @@ export default function EditMoment() {
 
         try {
             await api.updateMoment({ id: parseInt(id), name: data.name });
+            navigate("/moments");
         } catch (err) {
             setSubmitError(err instanceof Error ? err.message : 'Erro ao atualizar momento');
         }

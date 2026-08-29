@@ -8,12 +8,17 @@ export default function AddCategory() {
     const navigate = useNavigate();
     const [submitError, setSubmitError] = useState<string | null>(null);
 
-    const handleSubmit = async (data: CreateCategory) => {
+    const handleSubmit = async (data: { name: string; value: number; momentIds?: number[] }) => {
         setSubmitError(null);
 
         try {
-            await api.createCategory(data);
-            navigate('/');
+            const createData: CreateCategory = {
+                name: data.name,
+                value: data.value,
+                momentIds: data.momentIds
+            };
+            await api.createCategory(createData);
+            navigate('/categories');
         } catch (err) {
             setSubmitError(err instanceof Error ? err.message : 'Erro ao criar categoria');
         }

@@ -1,6 +1,5 @@
 import { Form, Button } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
-import {useNavigate} from "react-router-dom";
 
 interface MomentFormData {
   name: string;
@@ -19,12 +18,8 @@ export default function MomentForm({ initialData, onSubmit, submitLabel = 'Envia
     }
   });
 
-  const navigate = useNavigate();
-
   const onFormSubmit = (data: MomentFormData) => {
     onSubmit(data);
-
-    navigate("/moments")
   };
 
   return (
